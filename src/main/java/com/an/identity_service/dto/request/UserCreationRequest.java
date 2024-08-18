@@ -1,22 +1,19 @@
 package com.an.identity_service.dto.request;
 
+import jakarta.validation.constraints.Size;
+
 import java.time.LocalDate;
 
 public class UserCreationRequest {
-    private long id;
+    @Size(min = 4, message = "Username must be at least 4 character")
     private String username;
+
+    @Size(min = 8, message = "Password must be at least 8 character")
     private String password;
     private String firstName;
     private String lastName;
     private LocalDate dob;
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public String getUsername() {
         return username;
