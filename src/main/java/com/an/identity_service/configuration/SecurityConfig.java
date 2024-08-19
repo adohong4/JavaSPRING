@@ -35,9 +35,6 @@ public class SecurityConfig {
         httpSecurity.authorizeHttpRequests(request ->
                 //provide http is ok
                 request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
-
-//                        .hasAuthority("ROLE_ADMIN")
-//                        .hasRole(Role.ADMIN.name())
                 .anyRequest().authenticated());
 
         httpSecurity.oauth2ResourceServer(oauth2 ->
@@ -54,8 +51,8 @@ public class SecurityConfig {
 
     @Bean
     JwtAuthenticationConverter jwtAuthenticationConverter(){
-        JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter =new JwtGrantedAuthoritiesConverter()
-;        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
+        JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter =new JwtGrantedAuthoritiesConverter();
+        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("");
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
         return jwtAuthenticationConverter;

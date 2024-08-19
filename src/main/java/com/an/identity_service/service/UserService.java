@@ -8,17 +8,15 @@ import com.an.identity_service.enums.Role;
 import com.an.identity_service.exception.AppException;
 import com.an.identity_service.exception.ErrorCode;
 import com.an.identity_service.mapper.UserMapper;
+import com.an.identity_service.repository.RoleRepository;
 import com.an.identity_service.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,10 +26,12 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Slf4j
 public class UserService {
-    private static final Logger log = LoggerFactory.getLogger(UserService.class);
-    private UserRepository userRepository;
-    private UserMapper userMapper;
+
+    UserRepository userRepository;
+    RoleRepository roleRepository;
+    UserMapper userMapper;
     PasswordEncoder passwordEncoder;
 
     public UserResponse createUser(UserCreationRequest request){
@@ -56,13 +56,20 @@ public class UserService {
         User user = userRepository.findByUsername(name).orElseThrow(
                 () -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
+
         return userMapper.toUserResponse(user);
     }
 
-    public UserResponse updateUser(String userId, UserUpdateRequest request){
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User Not found"));
+    public UserResponse updateUser(String userId, UserUpdateRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         userMapper.updateUser(user, request);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        var roles = roleRepository.findAllById(request.getRoles());
+        user.setRoles(new HashSet<>(roles));
+
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
@@ -85,7 +92,5 @@ public class UserService {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User Not found"));
         return  userMapper.toUserResponse(user);
     }
-
-
 }
 
