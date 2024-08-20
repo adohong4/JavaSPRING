@@ -1,13 +1,11 @@
 package com.an.identity_service.mapper;
 
-import com.an.identity_service.dto.request.PermissionRequest;
-import com.an.identity_service.dto.request.RoleRequest;
-import com.an.identity_service.dto.response.PermissionResponse;
-import com.an.identity_service.dto.response.RoleResponse;
-import com.an.identity_service.entity.Permission;
-import com.an.identity_service.entity.Role;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+
+import com.an.identity_service.dto.request.RoleRequest;
+import com.an.identity_service.dto.response.RoleResponse;
+import com.an.identity_service.entity.Role;
 
 @Mapper(componentModel = "spring")
 public interface RoleMapper {

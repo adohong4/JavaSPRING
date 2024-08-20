@@ -1,10 +1,10 @@
 package com.an.identity_service.service;
 
-import com.an.identity_service.dto.request.UserCreationRequest;
-import com.an.identity_service.dto.response.UserResponse;
-import com.an.identity_service.entity.User;
-import com.an.identity_service.exception.AppException;
-import com.an.identity_service.repository.UserRepository;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+
+import java.time.LocalDate;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,17 +14,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.TestPropertySource;
 
-import java.time.LocalDate;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-
+import com.an.identity_service.dto.request.UserCreationRequest;
+import com.an.identity_service.dto.response.UserResponse;
+import com.an.identity_service.entity.User;
+import com.an.identity_service.exception.AppException;
+import com.an.identity_service.repository.UserRepository;
 
 @SpringBootTest
 @TestPropertySource("/test.properties")
 public class UserServiceTest {
     @Autowired
-    private  UserService userService;
+    private UserService userService;
 
     @MockBean
     private UserRepository userRepository;
@@ -35,7 +35,7 @@ public class UserServiceTest {
     private LocalDate dob;
 
     @BeforeEach
-    void initData(){
+    void initData() {
         dob = LocalDate.of(1990, 1, 1);
 
         request = UserCreationRequest.builder()
@@ -64,31 +64,28 @@ public class UserServiceTest {
     }
 
     @Test
-    void createUser_validRequest_success(){
-        //GiVEN
+    void createUser_validRequest_success() {
+        // GiVEN
         Mockito.when(userRepository.existsByUsername(anyString())).thenReturn(false);
         Mockito.when(userRepository.save(any())).thenReturn(user);
 
-        //WHEN
+        // WHEN
         var response = userService.createUser(request);
 
-        //THEN
-        Assertions.assertEquals(response.getId(),11);
-        Assertions.assertEquals(response.getUsername(),"johnnguyen");
-
+        // THEN
+        Assertions.assertEquals(response.getId(), 11);
+        Assertions.assertEquals(response.getUsername(), "johnnguyen");
     }
 
-
     @Test
-    void createUser_userExist_fail(){
-        //GiVEN
+    void createUser_userExist_fail() {
+        // GiVEN
         Mockito.when(userRepository.existsByUsername(anyString())).thenReturn(false);
 
-        //WHEN
-        var exception = Assertions.assertThrows(AppException.class,
-                () -> userService.createUser(request));
+        // WHEN
+        var exception = Assertions.assertThrows(AppException.class, () -> userService.createUser(request));
 
-        //THEN
+        // THEN
         Assertions.assertEquals(exception.getErrorCode().getCode(), 1002);
     }
 }
