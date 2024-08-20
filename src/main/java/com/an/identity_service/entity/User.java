@@ -20,6 +20,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
+    //fix many people access on time
     @Column(name = "username", unique = true, columnDefinition = "VARCHAR(255) COLLATE utf8mb4_unicode_ci")
     private String username;
     private String password;
