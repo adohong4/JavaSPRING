@@ -3,6 +3,9 @@ package com.an.identity_service.service;
 import java.util.HashSet;
 import java.util.List;
 
+import com.an.identity_service.constant.PredefinedRole;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,7 +15,7 @@ import com.an.identity_service.dto.request.UserCreationRequest;
 import com.an.identity_service.dto.request.UserUpdateRequest;
 import com.an.identity_service.dto.response.UserResponse;
 import com.an.identity_service.entity.User;
-import com.an.identity_service.enums.Role;
+import com.an.identity_service.entity.Role;
 import com.an.identity_service.exception.AppException;
 import com.an.identity_service.exception.ErrorCode;
 import com.an.identity_service.mapper.UserMapper;
@@ -36,17 +39,22 @@ public class UserService {
     PasswordEncoder passwordEncoder;
 
     public UserResponse createUser(UserCreationRequest request) {
-        if (userRepository.existsByUsername(request.getUsername())) throw new AppException(ErrorCode.USER_EXISTED);
 
         User user = userMapper.toUser(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        HashSet<String> roles = new HashSet<>();
-        roles.add(Role.USER.name());
+        HashSet<Role> roles = new HashSet<>();
+        roleRepository.findById(PredefinedRole.USER_ROLE).ifPresent(roles::add);
 
-        //        user.setRoles(roles);
+        user.setRoles(roles);
 
-        return userMapper.toUserResponse(userRepository.save(user));
+        try {
+            user = userRepository.save(user);
+        }catch (DataIntegrityViolationException exception){
+            throw new AppException(ErrorCode.USER_EXISTED);
+        }
+
+        return userMapper.toUserResponse(user);
     }
 
     public UserResponse getMyInfo() {
@@ -58,6 +66,7 @@ public class UserService {
         return userMapper.toUserResponse(user);
     }
 
+    @PostAuthorize("returnObject.username == authentication.name")
     public UserResponse updateUser(String userId, UserUpdateRequest request) {
         User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
