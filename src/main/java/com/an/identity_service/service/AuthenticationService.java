@@ -58,7 +58,7 @@ public class AuthenticationService {
         return IntrospectResponse.builder().valid(isValid).build();
     }
 
-    //---------------------Authentication------------
+    // ---------------------Authentication------------
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         var user = userRepository
@@ -165,8 +165,7 @@ public class AuthenticationService {
         }
     }
 
-
-    //-------------Scope Role----------------------
+    // -------------Scope Role----------------------
     private String buildScope(User user) {
         StringJoiner stringJoiner = new StringJoiner(" ");
 

@@ -2,22 +2,22 @@ package com.an.identity_service.configuration;
 
 import java.util.HashSet;
 
-import com.an.identity_service.constant.PredefinedRole;
-import com.an.identity_service.repository.RoleRepository;
-import lombok.experimental.NonFinal;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.an.identity_service.entity.User;
+import com.an.identity_service.constant.PredefinedRole;
 import com.an.identity_service.entity.Role;
+import com.an.identity_service.entity.User;
+import com.an.identity_service.repository.RoleRepository;
 import com.an.identity_service.repository.UserRepository;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 
 @Configuration
@@ -32,7 +32,7 @@ public class ApplicationInitConfig {
     static final String ADMIN_USER_NAME = "admin";
 
     @NonFinal
-    static  final String ADMIN_PASSWORD = "admin";
+    static final String ADMIN_PASSWORD = "admin";
 
     @Bean
     @ConditionalOnProperty(

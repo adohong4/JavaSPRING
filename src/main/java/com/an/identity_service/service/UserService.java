@@ -3,7 +3,6 @@ package com.an.identity_service.service;
 import java.util.HashSet;
 import java.util.List;
 
-import com.an.identity_service.constant.PredefinedRole;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -11,11 +10,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.an.identity_service.constant.PredefinedRole;
 import com.an.identity_service.dto.request.UserCreationRequest;
 import com.an.identity_service.dto.request.UserUpdateRequest;
 import com.an.identity_service.dto.response.UserResponse;
-import com.an.identity_service.entity.User;
 import com.an.identity_service.entity.Role;
+import com.an.identity_service.entity.User;
 import com.an.identity_service.exception.AppException;
 import com.an.identity_service.exception.ErrorCode;
 import com.an.identity_service.mapper.UserMapper;
@@ -50,7 +50,7 @@ public class UserService {
 
         try {
             user = userRepository.save(user);
-        }catch (DataIntegrityViolationException exception){
+        } catch (DataIntegrityViolationException exception) {
             throw new AppException(ErrorCode.USER_EXISTED);
         }
 
