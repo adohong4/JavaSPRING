@@ -6,7 +6,7 @@ import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.*;
 
-import com.an.identity_service.dto.request.ApiResponse;
+import com.an.identity_service.dto.ApiResponse;
 import com.an.identity_service.dto.request.UserCreationRequest;
 import com.an.identity_service.dto.request.UserUpdateRequest;
 import com.an.identity_service.dto.response.UserResponse;

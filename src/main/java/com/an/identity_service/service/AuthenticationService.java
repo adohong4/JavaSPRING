@@ -7,15 +7,14 @@ import java.util.Date;
 import java.util.StringJoiner;
 import java.util.UUID;
 
+import com.an.identity_service.dto.request.*;
+import com.an.identity_service.repository.OutboundIdentityClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import com.an.identity_service.dto.request.AuthenticationRequest;
-import com.an.identity_service.dto.request.IntrospectRequest;
-import com.an.identity_service.dto.request.LogoutRequest;
-import com.an.identity_service.dto.request.RefreshRequest;
 import com.an.identity_service.dto.response.AuthenticationResponse;
 import com.an.identity_service.dto.response.IntrospectResponse;
 import com.an.identity_service.entity.InvalidatedToken;
@@ -43,9 +42,22 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthenticationService {
     UserRepository userRepository;
     InvalidatedRepository invalidatedRepository;
+    OutboundIdentityClient outboundIdentityClient;
 
     @NonFinal
     protected static final String SIGNER_KEY = "N/gwZiN6XIaNjbTIJBcucYPPVm1uYdpiotz1AISKSQEAWywRLkqd4253PPClzbKV";
+
+    @NonFinal
+    protected final String CLIENT_ID = ;
+
+    @NonFinal
+    protected final String CLIENT_SECRET = ;
+
+    @NonFinal
+    protected final String REDIRECT_URI = ;
+
+    @NonFinal
+    protected final String GRANT_TYPE = "authorization_code";
 
     public IntrospectResponse introspect(IntrospectRequest request) throws JOSEException, ParseException {
         var token = request.getToken();
@@ -56,6 +68,20 @@ public class AuthenticationService {
             isValid = false;
         }
         return IntrospectResponse.builder().valid(isValid).build();
+    }
+
+    public AuthenticationResponse outboundAuthenticate(String code){
+        var response = outboundIdentityClient.exchangeToken(ExchangeTokenRequest.builder()
+                        .code(code)
+                        .clientId(CLIENT_ID)
+                        .clientSecret(CLIENT_SECRET)
+                        .redirectUri(REDIRECT_URI)
+                        .grantType(GRANT_TYPE)
+                .build());
+
+        return AuthenticationResponse.builder()
+                .token(response.getAccessToken())
+                .build();
     }
 
     // ---------------------Authentication------------

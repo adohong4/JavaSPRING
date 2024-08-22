@@ -2,10 +2,8 @@ package com.an.identity_service.controller;
 
 import java.text.ParseException;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.an.identity_service.dto.ApiResponse;
+import org.springframework.web.bind.annotation.*;
 
 import com.an.identity_service.dto.request.*;
 import com.an.identity_service.dto.response.AuthenticationResponse;
@@ -23,6 +21,15 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthenticationController {
     AuthenticationService authenticationService;
+
+    @PostMapping("/outbound/authentication")
+    ApiResponse<AuthenticationResponse> outboundAuthentication(
+            @RequestParam("code") String code
+    ){
+        var result = authenticationService.outboundAuthenticate(code);
+        return ApiResponse.<AuthenticationResponse>builder().result(result).build();
+    }
+
 
     @PostMapping("/token")
     ApiResponse<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {

@@ -11,8 +11,16 @@ spring:
     password: root
   jpa:
     hibernate:
-      ddl-auto: update
+      dialect: org.hibernate.dialect.MySQLDialect
+    ddl-auto: update
     show-sql: true
+
+
+  outbound:
+    identity:
+      client-id:
+      client-secret:
+      client-uri:
 
   jwt:
     signerKey: "N/gwZiN6XIaNjbTIJBcucYPPVm1uYdpiotz1AISKSQEAWywRLkqd4253PPClzbKV"
