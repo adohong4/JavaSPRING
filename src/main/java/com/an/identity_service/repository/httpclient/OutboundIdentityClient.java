@@ -1,4 +1,4 @@
-package com.an.identity_service.repository;
+package com.an.identity_service.repository.httpclient;
 
 
 import com.an.identity_service.dto.request.ExchangeTokenRequest;
