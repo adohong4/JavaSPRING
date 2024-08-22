@@ -85,6 +85,7 @@ public class AuthenticationService {
         Set<Role> roles = new HashSet<>();
         roles.add(Role.builder().name(PredefinedRole.USER_ROLE).build());
 
+        //Onboard User
         var user = userRepository.findByUsername(userInfo.getEmail()).orElseGet(
                 () -> userRepository.save(User.builder()
                                 .username(userInfo.getEmail())
@@ -94,8 +95,10 @@ public class AuthenticationService {
                         .build())
         );
 
+        var token = generateToken(user);
+
         return AuthenticationResponse.builder()
-                .token(response.getAccessToken())
+                .token(token)
                 .build();
     }
 
